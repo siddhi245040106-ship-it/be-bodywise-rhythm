@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rhythm by Be Bodywise | Intelligent Routine Continuity</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Top Global Announcement & Mode Bar -->
+  <header class="top-nav">
+    <div class="nav-container">
+      <div class="brand-cluster">
+        <div class="brand-logo">
+          <span class="brand-name">be bodywise</span>
+          <span class="sub-badge">rhythm</span>
+        </div>
+        <span class="brand-tagline">Routine Continuity System</span>
+      </div>
+
+      <div class="nav-actions">
+        <!-- Weather & UV Live Nudge Pill -->
+        <button id="weatherNudgeBtn" class="pill-btn weather-pill" title="Click to simulate climate changes">
+          <span class="weather-icon">☀️</span>
+          <span class="weather-text" id="weatherSummary">UV 7 (High) • Mumbai 31°C</span>
+        </button>
+
+        <!-- Mode Toggles -->
+        <button id="toggleTravelBtn" class="pill-btn mode-toggle" title="Toggle Travel Minimalist Mode">
+          <span class="mode-icon">✈️</span>
+          <span class="mode-label">Travel Mode: <strong id="travelStatusText">OFF</strong></span>
+        </button>
+
+        <button id="toggleComebackBtn" class="pill-btn mode-toggle highlight-pill" title="Simulate a missed week & gentle restart">
+          <span class="mode-icon">🌱</span>
+          <span class="mode-label">Comeback Mode</span>
+        </button>
+
+        <!-- Customer Research Inspector Button -->
+        <button id="openResearchBtn" class="pill-btn research-btn">
+          <span>📋 5 Customer Insights</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Quick Nav Tabs -->
+  <nav class="sub-nav">
+    <div class="tab-list">
+      <button class="nav-tab active" data-tab="today">
+        <span class="tab-icon">✨</span> Today's Routine
+      </button>
+      <button class="nav-tab" data-tab="card">
+        <span class="tab-icon">📑</span> Master Routine Card
+      </button>
+      <button class="nav-tab" data-tab="builder">
+        <span class="tab-icon">⚡</span> 60s Routine Builder
+      </button>
+      <button class="nav-tab" data-tab="radar">
+        <span class="tab-icon">📡</span> Refill Radar
+        <span class="badge-alert" id="refillAlertCount">1</span>
+      </button>
+      <button class="nav-tab" data-tab="pairing">
+        <span class="tab-icon">🧪</span> Pairing & Layering
+      </button>
+      <button class="nav-tab" data-tab="progress">
+        <span class="tab-icon">📊</span> Rhythm Score & Results
+      </button>
+      <button class="nav-tab" data-tab="advisor">
+        <span class="tab-icon">👩‍⚕️</span> Advisor in 1-Tap
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main App Shell -->
+  <main class="main-content">
+    
+    <!-- COMEBACK BANNER (shown when Comeback mode is active) -->
+    <div id="comebackBanner" class="comeback-banner hidden">
+      <div class="comeback-content">
+        <div class="comeback-emoji">🌱</div>
+        <div class="comeback-text">
+          <h3>Welcome back! No guilt, no streak reset.</h3>
+          <p>You missed a few days? Life happens. Your scalp and skin don't hold grudges. We saved your cumulative Rhythm score.</p>
+        </div>
+        <div class="comeback-actions">
+          <button id="resumeGentleBtn" class="btn btn-primary btn-sm">2-Day Gentle Restart (1 Core Step)</button>
+          <button id="resumeFullBtn" class="btn btn-secondary btn-sm">Resume Full Routine</button>
+          <button id="dismissComebackBtn" class="btn-ghost btn-sm">Dismiss</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRAVEL BANNER (shown when Travel mode is active) -->
+    <div id="travelBanner" class="travel-banner hidden">
+      <div class="travel-content">
+        <div class="travel-emoji">✈️</div>
+        <div class="travel-text">
+          <h3>Travel Mode Active: Lightweight 2-Step Routine</h3>
+          <p>Trimmed for airport security & packed schedules. Solves Sanjivani's struggle: <em>"routine stops completely on trips"</em>.</p>
+        </div>
+        <div class="travel-actions">
+          <button id="viewTravelPackBtn" class="btn btn-secondary btn-sm">View Packing Checklist</button>
+          <button id="exitTravelBtn" class="btn btn-ghost btn-sm">Exit Travel Mode</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- WEATHER / UV ALERT BAR -->
+    <div id="weatherAlertBar" class="weather-alert-bar">
+      <div class="weather-alert-inner">
+        <span class="weather-badge" id="weatherBadge">UV NUDGE</span>
+        <span class="weather-tip" id="weatherTip">
+          <strong>High UV Index (7):</strong> Peak sunlight detected. Apply 2 finger lengths of sunscreen 15 minutes before stepping out. Nimish skipped this — don't let UV reverse your progress!
+        </span>
+        <button id="cycleWeatherBtn" class="btn-link-sm">Simulate: Humid Monsoon / Dry Winter</button>
+      </div>
+    </div>
+
+    <!-- TAB 1: TODAY'S ROUTINE & 20-SEC CHECK-OFF -->
+    <section id="view-today" class="view-panel active">
+      <div class="section-header">
+        <div class="header-titles">
+          <span class="section-eyebrow">DAILY COMMITMENT • 20 SECONDS</span>
+          <h1 class="section-title">Today's Routine</h1>
+          <p class="section-sub">Simple, bite-sized steps tied to your daily habits. Never guess what comes next.</p>
+        </div>
+        <div class="header-metrics">
+          <div class="metric-card">
+            <span class="metric-num" id="todayScoreVal">88%</span>
+            <span class="metric-lbl">Weekly Rhythm Score</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-num" id="daysTrackedVal">18 / 30</span>
+            <span class="metric-lbl">Days on Routine</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Habit Anchor Context Cards -->
+      <div class="routine-blocks">
+        
+        <!-- AM ROUTINE BLOCK -->
+        <div class="routine-block">
+          <div class="block-header am-header">
+            <div class="time-title">
+              <span class="time-badge">MORNING • AM</span>
+              <span class="anchor-note">⚓ <strong>Habit Anchor:</strong> Right after brushing teeth</span>
+            </div>
+            <span class="block-status" id="amStatusBadge">1 of 2 done</span>
+          </div>
+          <div class="step-card-list" id="amStepList">
+            <!-- Dynamically populated via JS -->
+          </div>
+        </div>
+
+        <!-- PM ROUTINE BLOCK -->
+        <div class="routine-block">
+          <div class="block-header pm-header">
+            <div class="time-title">
+              <span class="time-badge">EVENING • PM</span>
+              <span class="anchor-note">⚓ <strong>Habit Anchor:</strong> On bedside table before sleep</span>
+            </div>
+            <span class="block-status" id="pmStatusBadge">Pending</span>
+          </div>
+          <div class="step-card-list" id="pmStepList">
+            <!-- Dynamically populated via JS -->
+          </div>
+        </div>
+
+        <!-- WEEKLY SPECIAL CADENCE -->
+        <div class="routine-block cadence-block">
+          <div class="block-header cadence-header">
+            <div class="time-title">
+              <span class="time-badge">WEEKLY CADENCE</span>
+              <span class="anchor-note">🎯 Payasvani's Insight: <em>"Three steps, no clear order or days"</em></span>
+            </div>
+            <span class="block-status">Due Wednesday & Sunday</span>
+          </div>
+          <div class="step-card-list" id="cadenceStepList">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Quick Action Bar -->
+      <div class="today-footer-bar">
+        <div class="quick-reassurance">
+          <span>💡 <strong>Quick Doctor Tip:</strong> Take Biotin Gummies 20 mins after breakfast for optimal nutrient absorption.</span>
+        </div>
+        <div class="footer-btns">
+          <button id="logSensationBtn" class="btn btn-secondary">
+            <span>📝 Log Scalp / Skin Feel</span>
+          </button>
+          <button id="completeAllTodayBtn" class="btn btn-primary">
+            <span>✓ Complete All Steps (+10 pts)</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: MASTER ONE ROUTINE CARD -->
+    <section id="view-card" class="view-panel">
+      <div class="section-header">
+        <div class="header-titles">
+          <span class="section-eyebrow">SINGLE SOURCE OF TRUTH</span>
+          <h1 class="section-title">One Routine Card</h1>
+          <p class="section-sub">
+            The identical card shown here, inside the delivery box, and unlocked by scanning the QR code on any bottle.
+            Ends conflicting advice across reels, website, and customer care.
+          </p>
+        </div>
+        <div class="header-actions">
+          <button id="simulateQrBtn" class="btn btn-secondary">
+            <span>📷 Simulate Bottle QR Scan</span>
+          </button>
+          <button id="printCardBtn" class="btn btn-outline">
+            <span>🖨️ Print / Download Card</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="master-card-container">
+        <div class="master-routine-card" id="printableCard">
+          <div class="card-brand-header">
+            <div>
+              <div class="card-brand-logo">be bodywise</div>
+              <div class="card-patient-line">Personalized Routine Card • Protocol #BW-8921</div>
+            </div>
+            <div class="qr-box">
+              <div class="qr-mockup">
+                <div class="qr-pattern"></div>
+              </div>
+              <span class="qr-caption">Scan pack code</span>
+            </div>
+          </div>
+
+          <div class="card-customer-target">
+            <div class="target-item">
+              <span class="target-lbl">TARGET CONCERN</span>
+              <strong id="cardTargetConcern">Hair Thinning & Density Restoration</strong>
+            </div>
+            <div class="target-item">
+              <span class="target-lbl">CLINICAL STAGE</span>
+              <strong>Month 2 of 4 (Follicle Strengthening)</strong>
+            </div>
+            <div class="target-item">
+              <span class="target-lbl">ADHERENCE RHYTHM</span>
+              <strong class="text-success">88% (High Continuity)</strong>
+            </div>
+          </div>
+
+          <!-- Chronological Schedule -->
+          <div class="chronological-schedule">
+            <div class="schedule-column">
+              <div class="column-title">☀️ MORNING (AM)</div>
+              <div class="protocol-step">
+                <div class="step-num">1</div>
+                <div class="step-info">
+                  <h4>Biotin Hair Gummies</h4>
+                  <p class="step-dose"><strong>Dosage:</strong> 1 gummy daily post-breakfast.</p>
+                  <p class="step-why"><strong>Why:</strong> Ingestible nutrition supports keratin synthesis at follicle roots.</p>
+                  <div class="step-pill">Every single day</div>
+                </div>
+              </div>
+              <div class="protocol-step">
+                <div class="step-num">2</div>
+                <div class="step-info">
+                  <h4>Broad-Spectrum Sunscreen / Shield</h4>
+                  <p class="step-dose"><strong>Dosage:</strong> 2 finger lengths on exposed hairline & skin.</p>
+                  <p class="step-why"><strong>Why:</strong> Prevents UV oxidative stress from breaking down hair protein.</p>
+                  <div class="step-pill">Daily before sun exposure</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="schedule-column">
+              <div class="column-title">🌙 NIGHT (PM)</div>
+              <div class="protocol-step">
+                <div class="step-num">3</div>
+                <div class="step-info">
+                  <h4>Advanced Hair Growth Serum</h4>
+                  <p class="step-dose"><strong>Dosage:</strong> 1 ml using precision roller directly on clean dry scalp.</p>
+                  <p class="step-why"><strong>Why:</strong> Redensyl + Procapil stimulate dormant anagen growth phase overnight.</p>
+                  <p class="step-tip">💡 <em>Tip for Rohit:</em> Massage for 60s; avoid over-saturation to eliminate stickiness.</p>
+                  <div class="step-pill">Daily before sleep</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="schedule-column">
+              <div class="column-title">🗓️ WEEKLY CADENCE</div>
+              <div class="protocol-step">
+                <div class="step-num">4</div>
+                <div class="step-info">
+                  <h4>Exfoliating Scalp / Body Cleanser</h4>
+                  <p class="step-dose"><strong>Frequency:</strong> Wednesday & Sunday only.</p>
+                  <p class="step-why"><strong>Why:</strong> Clears sebum & dead build-up so topical serum penetrates 3x better.</p>
+                  <div class="step-pill cadence">2x Per Week</div>
+                </div>
+              </div>
+              <div class="protocol-step">
+                <div class="step-num">5</div>
+                <div class="step-info">
+                  <h4>Deep Nourishing Hair Mask</h4>
+                  <p class="step-dose"><strong>Frequency:</strong> Sunday evening (leave on 15 mins).</p>
+                  <p class="step-why"><strong>Why:</strong> Rebuilds cuticle moisture lost to hard water or styling.</p>
+                  <div class="step-pill cadence">1x Per Week</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Card Safeguards -->
+          <div class="card-safeguards">
+            <div class="safeguard-item">
+              <span class="safe-icon">⚡</span>
+              <div>
+                <strong>The 14-Day Refill Rule:</strong>
+                <span>Refill alerts trigger 12 days before bottle ends so reorder gaps never break your cycle.</span>
+              </div>
+            </div>
+            <div class="safeguard-item">
+              <span class="safe-icon">🛡️</span>
+              <div>
+                <strong>Zero Streak Shaming:</strong>
+                <span>Missed a weekend? Switch to 2-Day Comeback Mode. Don't double-dose.</span>
+              </div>
+            </div>
+            <div class="safeguard-item">
+              <span class="safe-icon">📞</span>
+              <div>
+                <strong>Doctor Consultation:</strong>
+                <span>Free follow-up included. Tap "Advisor" anytime with your logged data.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: 60-SECOND ROUTINE BUILDER -->
+    <section id="view-builder" class="view-panel">
+      <div class="section-header">
+        <div class="header-titles">
+          <span class="section-eyebrow">ELIMINATE CHOICE OVERWHELM</span>
+          <h1 class="section-title">60-Second Routine Builder</h1>
+          <p class="section-sub">
+            Nimish and Payasvani found the catalog overwhelming. This AI-guided builder distills dozens of SKUs into
+            a tight 2-3 product routine based on your primary concern, time, and lifestyle.
+          </p>
+        </div>
+      </div>
+
+      <div class="builder-wizard-container">
+        <!-- Progress Steps -->
+        <div class="wizard-progress">
+          <div class="wiz-step active" id="wizStep1">1. Concern</div>
+          <div class="wiz-line"></div>
+          <div class="wiz-step" id="wizStep2">2. Lifestyle & Time</div>
+          <div class="wiz-line"></div>
+          <div class="wiz-step" id="wizStep3">3. Effort Level</div>
+          <div class="wiz-line"></div>
+          <div class="wiz-step" id="wizStep4">4. Your Starter Routine</div>
+        </div>
+
+        <!-- Wizard Step 1: Concern -->
+        <div class="wizard-panel active" id="panelStep1">
+          <h2 class="wizard-q">What is your primary wellness or beauty goal?</h2>
+          <p class="wizard-desc">Choose the main concern you want to solve right now. We keep it focused.</p>
+          <div class="options-grid" id="concernOptions">
+            <button class="choice-card active" data-concern="hair_fall">
+              <span class="choice-icon">💇‍♀️</span>
+              <div class="choice-text">
+                <strong>Hair Fall & Thinning</strong>
+                <span>Excessive shedding, visible scalp line, fragile strands</span>
+              </div>
+            </button>
+            <button class="choice-card" data-concern="underarm">
+              <span class="choice-icon">🌸</span>
+              <div class="choice-text">
+                <strong>Underarm Pigmentation & Odor</strong>
+                <span>Darkening from roll-ons, sweat, sensitive friction</span>
+              </div>
+            </button>
+            <button class="choice-card" data-concern="body_acne">
+              <span class="choice-icon">🧼</span>
+              <div class="choice-text">
+                <strong>Body Texture, Keratosis & Acne</strong>
+                <span>Rough 'strawberry' skin, bacne, uneven texture</span>
+              </div>
+            </button>
+            <button class="choice-card" data-concern="sun_dryness">
+              <span class="choice-icon">☀️</span>
+              <div class="choice-text">
+                <strong>Sun Protection & Dry Dehydrated Skin</strong>
+                <span>Dullness, UV damage, dryness after bathing (Nimish's concern)</span>
+              </div>
+            </button>
+            <button class="choice-card" data-concern="scalp_dandruff">
+              <span class="choice-icon">❄️</span>
+              <div class="choice-text">
+                <strong>Flaky Scalp & Sebum Build-Up</strong>
+                <span>Oily flakes, itchiness, sticky product accumulation</span>
+              </div>
+            </button>
+          </div>
+          <div class="wizard-actions">
+            <div></div>
+            <button class="btn btn-primary" id="toStep2Btn">Next: Lifestyle & Habits →</button>
+          </div>
+        </div>
+
+        <!-- Wizard Step 2: Lifestyle -->
+        <div class="wizard-panel" id="panelStep2">
+          <h2 class="wizard-q">When do you prefer dedicating time to your body?</h2>
+          <p class="wizard-desc">We will anchor your products around your existing natural habits.</p>
+          <div class="options-grid" id="timingOptions">
+            <button class="choice-card active" data-timing="morning">
+              <span class="choice-icon">☀️</span>
+              <div class="choice-text">
+                <strong>Morning Routine Person</strong>
+                <span>Post-shower, right after breakfast (ideal for gummies & sunscreen)</span>
+              </div>
+            </button>
+            <button class="choice-card" data-timing="night">
+              <span class="choice-icon">🌙</span>
+              <div class="choice-text">
+                <strong>Night Owl / Bedtime Focused</strong>
+                <span>Unwinding before sleep, applying serums with overnight absorption</span>
+              </div>
+            </button>
+            <button class="choice-card" data-timing="split">
+              <span class="choice-icon">⚖️</span>
+              <div class="choice-text">
+                <strong>Balanced AM & PM Split</strong>
+                <span>Quick 1-min AM protection + 2-min PM repair</span>
+              </div>
+            </button>
+          </div>
+
+          <div class="wizard-sub-section">
+            <label class="input-label">Do you travel frequently for work or study?</label>
+            <div class="travel-radio-group">
+              <label><input type="radio" name="freqTravel" value="yes"> Yes, regularly on the road (Enable auto-travel mode)</label>
+              <label><input type="radio" name="freqTravel" value="no" checked> Mostly at home</label>
+            </div>
+          </div>
+
+          <div class="wizard-actions">
+            <button class="btn btn-outline" id="backToStep1Btn">← Back</button>
+            <button class="btn btn-primary" id="toStep3Btn">Next: Commitment Level →</button>
+          </div>
+        </div>
+
+        <!-- Wizard Step 3: Commitment -->
+        <div class="wizard-panel" id="panelStep3">
+          <h2 class="wizard-q">What effort level are you genuinely willing to sustain?</h2>
+          <p class="wizard-desc">Consistency beats complexity every time. A 2-step routine done daily beats a 5-step kit dropped in week 3.</p>
+          <div class="options-grid" id="effortOptions">
+            <button class="choice-card" data-effort="minimal">
+              <span class="choice-icon">⚡</span>
+              <div class="choice-text">
+                <strong>Ultra-Minimalist (1 Minute / Day)</strong>
+                <span>Strictly 1-2 core essentials. Near-zero friction. Perfect for busy students & professionals.</span>
+              </div>
+            </button>
+            <button class="choice-card active" data-effort="balanced">
+              <span class="choice-icon">⭐</span>
+              <div class="choice-text">
+                <strong>Balanced & High-Impact (3 Minutes / Day)</strong>
+                <span>2-3 synergistic products (e.g. Ingestible + Topical + Protective shield). High clinical efficacy.</span>
+              </div>
+            </button>
+            <button class="choice-card" data-effort="dedicated">
+              <span class="choice-icon">👑</span>
+              <div class="choice-text">
+                <strong>Dedicated Self-Care (5 Minutes / Day)</strong>
+                <span>Complete 3-step routine + weekly targeted treatment mask/exfoliant.</span>
+              </div>
+            </button>
+          </div>
+          <div class="wizard-actions">
+            <button class="btn btn-outline" id="backToStep2Btn">← Back</button>
+            <button class="btn btn-primary" id="generateRoutineBtn">Generate My Routine ✨</button>
+          </div>
+        </div>
+
+        <!-- Wizard Step 4: Output Routine -->
+        <div class="wizard-panel" id="panelStep4">
+          <div class="builder-result-header">
+            <div class="result-badge">CLINICALLY CURATED STARTER SET</div>
+            <h2 id="generatedRoutineTitle">Your Targeted Hair Growth & Retention Protocol</h2>
+            <p id="generatedRoutineDesc">Engineered from the Be Bodywise clinic formulations to match your schedule and prevent drop-off.</p>
+          </div>
+
+          <div class="recommended-products-grid" id="recommendedProductsList">
+            <!-- Populated dynamically via JS -->
+          </div>
+
+          <div class="builder-actions-footer">
+            <button class="btn btn-outline" id="restartWizardBtn">Re-run Builder</button>
+            <button class="btn btn-secondary" id="saveAndPairBtn">Test Product Layering</button>
+            <button class="btn btn-primary" id="adoptRoutineBtn">Adopt as Today's Routine ✓</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: REFILL RADAR (Smart Depletion Predictor) -->
+    <section id="view-radar" class="view-panel">
+      <div class="section-header">
+        <div class="header-titles">
+          <span class="section-eyebrow">PREVENT REORDER GAPS</span>
+          <h1 class="section-title">Refill Radar</h1>
+          <p class="section-sub">
+            Anusha & Rohit both ran out of products and faced a 2 to 3-week gap, destroying their momentum.
+            Refill Radar tracks your pack capacity and alerts you 12 days early with 1-tap reordering.
+          </p>
+        </div>
+        <div class="header-metrics">
+          <div class="metric-card alert-border">
+            <span class="metric-num text-danger" id="urgentRefillCount">1 Item</span>
+            <span class="metric-lbl">Needs Action within 7 Days</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Radar Items -->
+      <div class="radar-inventory-grid" id="radarItemsGrid">
+        <!-- Injected dynamically via JS with real products:
+             1. Biotin Hair Gummies (60 gummies pack)
+             2. Advanced Hair Growth Serum (50ml bottle)
+             3. AHA/BHA Body Wash (200ml)
+             4. 4% Niacinamide Underarm Roll-on (50ml)
+             5. SPF 50 Mineral Sunscreen (50ml)
+        -->
+      </div>
+
+      <!-- Refill Architecture Explainer -->
+      <div class="info-callout-card">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body">
+          <h4>How Refill Radar Protects Hair & Skin Cycles:</h4>
+          <p>
+            Hair regrowth cycles (Anagen phase) require uninterrupted topical nutrition for 90–120 days.
+            A 2-week delivery delay resets follicle signaling and triggers shedding panic.
+            Refill Radar calculates consumption rate based on your daily check-offs and delivery transit times to your pincode.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: PAIRING & LAYERING CHECKER -->
+    <section id="view-pairing" class="view-panel">
+      <div class="section-header">
+        <div class="header-titles">
+          <span class="section-eyebrow">CLINICAL COMPATIBILITY ENGINE</span>
+          <h1 class="section-title">Pairing & Layering Safety Checker</h1>
+          <p class="section-sub">
+            Four out of five customers asked <em>"Am I using this right?"</em>. Sanjivani wasn't sure if roll-on can go after body lotion;
+            Rohit didn't know if gummies and serum conflict. Pick any products to check rules.
+          </p>
+        </div>
+      </div>
+
+      <div class="pairing-tool-container">
+        <div class="pairing-selectors">
+          <div class="selector-box">
+            <label class="field-label">Select First Product:</label>
+            <select id="pairProductA" class="form-select">
+              <option value="gummies">Biotin Hair Gummies (Ingestible)</option>
+              <option value="serum" selected>Advanced Hair Growth Serum (Roll-on)</option>
+              <option value="rollon">4% Niacinamide Underarm Roll-on</option>
+              <option value="bodywash">1% Salicylic Acid Body Wash</option>
+              <option value="lotion">10% Niacinamide Body Lotion</option>
+              <option value="sunscreen">SPF 50 Sunscreen Shield</option>
+              <option value="mask">Keratin Repair Hair Mask</option>
+            </select>
+          </div>
+
+          <div class="pairing-connector">
+            <span>+</span>
+          </div>
+
+          <div class="selector-box">
+            <label class="field-label">Select Second Product:</label>
+            <select id="pairProductB" class="form-select">
+              <option value="gummies" selected>Biotin Hair Gummies (Ingestible)</option>
+              <option value="serum">Advanced Hair Growth Serum (Roll-on)</option>
+              <option value="rollon">4% Niacinamide Underarm Roll-on</option>
+              <option value="bodywash">1% Salicylic Acid Body Wash</option>
+              <option value="lotion">10% Niacinamide Body Lotion</option>
+              <option value="sunscreen">SPF 50 Sunscreen Shield</option>
+              <option value="mask">Keratin Repair Hair Mask</option>
+            </select>
+          </div>
+
+          <button id="checkPairingBtn" class="btn btn-primary">Check Compatibility</button>
+        </div>
+
+        <!-- Pairing Verdict Result -->
+        <div class="pairing-verdict-card" id="pairingVerdict">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Common Pre-Validated Combos -->
+        <div class="preset-combos-section">
+          <h3>Quick Questions From Customer Interviews:</h3>
+          <div class="quick-preset-chips">
+            <button class="preset-chip" data-combo="serum-gummies">
+              Rohit's Query: Serum + Biotin Gummies?
+            </button>
+            <button class="preset-chip" data-combo="rollon-lotion">
+              Sanjivani's Query: Roll-on + Body Lotion?
+            </button>
+            <button class="preset-chip" data-combo="bodywash-sunscreen">
+              Nimish's Query: Salicylic Wash + Sunscreen?
+            </button>
+            <button class="preset-chip" data-combo="mask-serum">
+              Payasvani's Query: Hair Mask + Growth Serum?
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 6: RHYTHM SCORE & HONEST RESULTS TIMELINE -->
+    <section id="view-progress" class="view-panel">
+      <div class="section-header">
+        <div class="header-titles">
+          <span class="section-eyebrow">EFFORT-BASED CONSISTENCY</span>
+          <h1 class="section-title">Rhythm Score & Honest Results Window</h1>
+          <p class="section-sub">
+            Measures your adherence, not uncontrollable genetics. Shows exactly when clinical biological changes occur
+            so you don't drop off before results become visible.
+          </p>
+        </div>
+      </div>
+
+      <div class="score-dashboard-grid">
+        <!-- Left: Rhythm Gauge -->
+        <div class="score-card">
+          <div class="card-title-row">
+            <h3>Weekly Rhythm Score</h3>
+            <span class="badge-status badge-success">Consistent</span>
+          </div>
+          <div class="gauge-wrapper">
+            <div class="circular-progress" id="scoreCircle">
+              <div class="inner-circle">
+                <span class="score-number" id="mainScoreNum">88</span>
+                <span class="score-unit">/ 100</span>
+              </div>
+            </div>
+          </div>
+          <p class="score-summary">
+            <strong>Effort Verdict:</strong> High habit continuity. You completed 18 of your last 20 daily steps.
+            Missing a day never zeroes this out — it only causes a gentle temporary dip.
+          </p>
+          <div class="score-breakdown">
+            <div class="breakdown-item">
+              <span>AM Adherence</span>
+              <div class="mini-bar"><div class="mini-bar-fill" style="width: 95%;"></div></div>
+              <span>95%</span>
+            </div>
+            <div class="breakdown-item">
+              <span>PM Adherence</span>
+              <div class="mini-bar"><div class="mini-bar-fill" style="width: 80%;"></div></div>
+              <span>80%</span>
+            </div>
+            <div class="breakdown-item">
+              <span>Cadence Consistency</span>
+              <div class="mini-bar"><div class="mini-bar-fill" style="width: 90%;"></div></div>
+              <span>90%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Honest Results Biological Timeline -->
+        <div class="timeline-card">
+          <div class="card-title-row">
+            <h3>Honest Results Window (Hair Protocol)</h3>
+            <span class="badge-sub">Clinical Biology Timeline</span>
+          </div>
+          <p class="timeline-intro">
+            D2C brands often promise overnight miracles. Here is the true scientific biological progression:
+          </p>
+
+          <div class="timeline-steps">
+            <div class="t-step passed">
+              <div class="t-badge">Weeks 1–2</div>
+              <div class="t-content">
+                <strong>Phase 1: Scalp & Cuticle Acclimatization</strong>
+                <p>Scalp microbiome stabilizes; minor transient shedding may occur as damaged telogen hairs dislodge. Do not panic.</p>
+                <span class="t-status">✓ Completed</span>
+              </div>
+            </div>
+            <div class="t-step current">
+              <div class="t-badge">Weeks 3–6</div>
+              <div class="t-content">
+                <strong>Phase 2: Follicle Anchoring & Shedding Reduction</strong>
+                <p>Anusha & Payasvani noticed this phase: fewer strands in the brush and shower drain. Scalp oiliness normalizes.</p>
+                <span class="t-status current-tag">📍 You are here (Day 24)</span>
+              </div>
+            </div>
+            <div class="t-step upcoming">
+              <div class="t-badge">Weeks 7–12</div>
+              <div class="t-content">
+                <strong>Phase 3: Anagen Activation & Baby Hair Emergence</strong>
+                <p>New vellus hairs appear along thin partings. Texture feels thicker and stronger from keratin synthesis.</p>
+                <span class="t-status">Expected in ~4 weeks</span>
+              </div>
+            </div>
+            <div class="t-step upcoming">
+              <div class="t-badge">Month 4–6+</div>
+              <div class="t-content">
+                <strong>Phase 4: Visible Volume & Density Maturation</strong>
+                <p>Vellus hairs convert to terminal hairs. Noticeable density improvement on clinical photo comparison.</p>
+                <span class="t-status">Long-term maintenance</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rewards & Student Perks -->
+      <div class="perks-strip">
+        <div class="perk-box">
+          <div class="perk-icon">🎓</div>
+          <div>
+            <strong>Student Continuity Pass</strong>
+            <p>Verify your college ID for lower milestone thresholds and 20% on refills. Tailored for students like Nimish.</p>
+          </div>
+          <button id="verifyStudentBtn" class="btn btn-outline btn-sm">Verify College ID</button>
+        </div>
+        <div class="perk-box">
+          <div class="perk-icon">🎁</div>
+          <div>
+            <strong>Buy 5, Get 6th Mini Free Tracker</strong>
+            <p>Refill consistently and unlock complementary travel minis. <strong>3 of 5 completed.</strong></p>
+          </div>
+          <button id="viewPerkTrackerBtn" class="btn btn-secondary btn-sm">View Punch Card</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 7: ADVISOR IN ONE TAP -->
+    <section id="view-advisor" class="view-panel">
+      <div class="section-header">
+        <div class="header-titles">
+          <span class="section-eyebrow">SEAMLESS CLINICAL TRIAGE</span>
+          <h1 class="section-title">Advisor in 1-Tap</h1>
+          <p class="section-sub">
+            4 out of 5 customers never reached a Be Bodywise doctor due to wait times or intimidation.
+            Rhythm packages your real routine, logged reactions, and adherence history into a ready-to-share clinical brief.
+          </p>
+        </div>
+      </div>
+
+      <div class="advisor-grid">
+        <!-- Generated Clinical Context Packet -->
+        <div class="advisor-packet-card">
+          <div class="packet-header">
+            <div>
+              <h3>Automated Clinical Hand-off Packet</h3>
+              <p>Generated dynamically from your browser's local routine logs.</p>
+            </div>
+            <span class="badge-status badge-info">Zero Wait Setup</span>
+          </div>
+
+          <div class="packet-preview" id="packetPreview">
+            <div class="packet-line"><strong>Patient Profile:</strong> Anusha G. (Age 24 • Female)</div>
+            <div class="packet-line"><strong>Primary Goal:</strong> Hair fall reduction & thinning reversal</div>
+            <div class="packet-line"><strong>Active Products:</strong> Biotin Hair Gummies (Daily AM) + Advanced Growth Serum (Daily PM)</div>
+            <div class="packet-line"><strong>Routine Duration:</strong> 42 days tracked (88% adherence)</div>
+            <div class="packet-line"><strong>Logged Concerns:</strong> 1 gap incident (mid-month supply runout); mild serum stickiness on humid days.</div>
+            <div class="packet-line"><strong>Recent Scalp/Skin Log:</strong> Scalp shedding reduced by ~30%, no allergic erythema.</div>
+          </div>
+
+          <div class="packet-actions">
+            <button id="shareWhatsAppBtn" class="btn btn-primary">
+              <span>💬 Start WhatsApp Doctor Consult</span>
+            </button>
+            <button id="simulateDoctorChatBtn" class="btn btn-secondary">
+              <span>🩺 Launch Interactive Doctor Chat</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Doctor Consultation Q&A Simulator -->
+        <div class="doctor-chat-card">
+          <div class="doctor-header">
+            <div class="doc-avatar">👩‍⚕️</div>
+            <div>
+              <strong>Dr. Ananya Sharma</strong>
+              <span>Be Bodywise Trichology & Wellness Lead</span>
+            </div>
+            <span class="online-indicator">Online</span>
+          </div>
+
+          <div class="chat-messages" id="chatMessages">
+            <div class="msg doc-msg">
+              Hello Anusha! I just reviewed your Rhythm packet. Excellent 88% adherence on your Biotin Gummies! I noticed you experienced slight stickiness with the serum last week. Let's adjust your dosage to 0.75ml and apply strictly on damp, parted scalp.
+            </div>
+            <div class="msg user-msg">
+              Thank you Dr. Sharma! That makes so much sense. Should I keep taking the gummies right after breakfast?
+            </div>
+            <div class="msg doc-msg">
+              Yes, exactly. Keep that morning habit anchor. Also, your Refill Radar flagged 8 days of gummies left—I approved an express refill with zero shipping fee for you.
+            </div>
+          </div>
+
+          <div class="chat-input-bar">
+            <input type="text" id="chatInput" placeholder="Ask Dr. Sharma a follow-up question..." class="chat-input">
+            <button id="sendChatBtn" class="btn btn-primary btn-sm">Send</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: Customer Research Drawer (Part 1 Submission Inspector) -->
+  <div id="researchDrawer" class="modal-overlay hidden">
+    <div class="drawer-modal">
+      <div class="modal-header">
+        <div>
+          <span class="modal-eyebrow">FELLOWSHIP CHALLENGE • PART 1 RESEARCH</span>
+          <h2>5 Customer Conversations & Root Cause Analysis</h2>
+        </div>
+        <button id="closeResearchBtn" class="close-x">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="lead-text">
+          Direct insights gathered from real Be Bodywise customers that inspired the architectural features of <strong>Rhythm</strong>:
+        </p>
+
+        <div class="customer-cards-deck">
+          <!-- Customer 1 -->
+          <div class="c-card">
+            <div class="c-header">
+              <div>
+                <strong>Anusha Garg</strong>
+                <span class="c-phone">+91 9058885170</span>
+              </div>
+              <span class="c-tag">Biotin Gummies (3–6m)</span>
+            </div>
+            <p><strong>Struggle:</strong> Ran out mid-month; reorder took 2 weeks so she skipped doses.</p>
+            <p><strong>What she wanted:</strong> Reminder before pack ends & easy restart after a break.</p>
+            <div class="c-solution">👉 <strong>Rhythm Solution:</strong> Refill Radar 12-day predictive alert + Comeback Mode.</div>
+          </div>
+
+          <!-- Customer 2 -->
+          <div class="c-card">
+            <div class="c-header">
+              <div>
+                <strong>Payasvani Raina</strong>
+                <span class="c-phone">+91 9596938795</span>
+              </div>
+              <span class="c-tag">Hair Care Kit (1–3m)</span>
+            </div>
+            <p><strong>Struggle:</strong> Three steps and no clear order. Pack, website and reels gave conflicting instructions. Dropped mask in week 3.</p>
+            <p><strong>What she wanted:</strong> One simple routine card with order and days shipped in the kit.</p>
+            <div class="c-solution">👉 <strong>Rhythm Solution:</strong> Master One Routine Card + Scannable QR code.</div>
+          </div>
+
+          <!-- Customer 3 -->
+          <div class="c-card">
+            <div class="c-header">
+              <div>
+                <strong>Sanjivani</strong>
+                <span class="c-phone">+91 9905139996</span>
+              </div>
+              <span class="c-tag">Roll-on & Lotion (1–3m)</span>
+            </div>
+            <p><strong>Struggle:</strong> Travels for work; entire routine halts on trips. Unsure if roll-on can layer after lotion.</p>
+            <p><strong>What she wanted:</strong> Travel pack, simple on-the-road routine, pairing guidance.</p>
+            <div class="c-solution">👉 <strong>Rhythm Solution:</strong> 1-Tap Travel Mode + Clinical Layering Engine.</div>
+          </div>
+
+          <!-- Customer 4 -->
+          <div class="c-card">
+            <div class="c-header">
+              <div>
+                <strong>Nimish Sugla</strong>
+                <span class="c-phone">+91 9311052199</span>
+              </div>
+              <span class="c-tag">Body Wash & Sunscreen (3–6m)</span>
+            </div>
+            <p><strong>Struggle:</strong> Catalog overwhelm; skips sunscreen because unsure when/how much; skin feels dry.</p>
+            <p><strong>What he wanted:</strong> Quick way to find what fits, clear daily routine, didn't know about doctors.</p>
+            <div class="c-solution">👉 <strong>Rhythm Solution:</strong> 60s Routine Builder + Weather UV Nudge + Advisor in 1-Tap.</div>
+          </div>
+
+          <!-- Customer 5 -->
+          <div class="c-card">
+            <div class="c-header">
+              <div>
+                <strong>Rohit Kumar Yadav</strong>
+                <span class="c-phone">+91 8918666286</span>
+              </div>
+              <span class="c-tag">Serum & Gummies (6m+)</span>
+            </div>
+            <p><strong>Struggle:</strong> 3-week gap when bottle finished; serum felt sticky; unsure if gummies and serum mix; long wait for advisor.</p>
+            <p><strong>What he wanted:</strong> Run-out heads-up, quicker route to advisor, application advice.</p>
+            <div class="c-solution">👉 <strong>Rhythm Solution:</strong> Refill Radar + Pairing Checker + 1-Tap Context-Rich Doctor Handoff.</div>
+          </div>
+        </div>
+
+        <div class="synthesis-box">
+          <h4>Systems Thinking Synthesis:</h4>
+          <p>
+            The root failure is not product efficacy—it is the <strong>Sustain stage collapse</strong>.
+            D2C brands optimize for conversion (acquisition), but wellness biology requires 90+ days of uninterrupted continuity.
+            Rhythm bridges the gap between buying a product and forming an invincible habit.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Bottle QR Code Scanner Simulation -->
+  <div id="qrModal" class="modal-overlay hidden">
+    <div class="dialog-modal">
+      <div class="modal-header">
+        <h3>Simulating Bottle QR Scan</h3>
+        <button id="closeQrModalBtn" class="close-x">&times;</button>
+      </div>
+      <div class="modal-body text-center">
+        <div class="scanner-viewfinder">
+          <div class="laser-beam"></div>
+          <div class="scanned-product-preview">
+            <span class="prod-badge">Product Detected:</span>
+            <h4>Be Bodywise Advanced Hair Growth Serum (50ml)</h4>
+            <p>Lot #BW-4091 • Verified Authentic Formulation</p>
+          </div>
+        </div>
+        <p class="scanner-note">
+          Scanning the bottle directly syncs the product into your One Routine Card, calculates remaining doses, and reveals clinical pairing rules.
+        </p>
+        <button id="confirmScanSyncBtn" class="btn btn-primary">Sync Product to Today's Routine</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Reorder 1-Tap Confirmation -->
+  <div id="reorderModal" class="modal-overlay hidden">
+    <div class="dialog-modal">
+      <div class="modal-header">
+        <h3>1-Tap Express Refill</h3>
+        <button id="closeReorderModalBtn" class="close-x">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="reorder-item-summary" id="reorderSummaryBox">
+          <!-- Populated by JS -->
+        </div>
+        <div class="delivery-estimate-card">
+          <span>⚡ Estimated delivery to your pincode: <strong>Within 48 Hours</strong></span>
+          <p>Leaves 6 buffer days before your current bottle runs out. Zero gap guaranteed.</p>
+        </div>
+        <div class="reorder-actions">
+          <button id="confirmReorderBtn" class="btn btn-primary btn-block">Confirm 1-Tap Refill (COD / UPI)</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toast Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Sound FX / Web Audio Generator script -->
+  <script src="app.js"></script>
+</body>
+</html>
